@@ -4,36 +4,34 @@ import axios from 'axios'
 import { useSearchParams,Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Plyr from 'plyr';
-import Hls from 'hls.js';
 function Watch() {
+localStorage.clear();
+
+  const [searchParams] = useSearchParams();
+const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHref'));
+
+
+  useEffect(() => {
+    const currentHref = searchParams.get('episodeHref');
+    if (currentHref !== episodeHref) {
+      setEpisodeHref(currentHref);
+    }
+  }, [searchParams, episodeHref]);
+
+
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const frm = useRef(null);
-  const [searchParams] = useSearchParams();
-  const player = new Plyr('#player', {
-    captions: { active: true, update: true }
-  });
-	const trackNode = player.captions.currentTrackNode; // <track> element
 
-if (trackNode) {
-  // Find the matching TextTrack
-  const textTrack = Array.from(player.textTracks).find(
-    t => t.language === trackNode.srclang
-  );
+ 
+const [videoSrc, setVideoSrc] = useState('');
 
-  if (textTrack && (!textTrack.activeCues || textTrack.mode !== 'showing')) {
-    textTrack.mode = 'showing';
-  }
-}
+  
 
 
-const [tracks,setTracks]=useState([])
-const track = useRef(null);
-  //const player = videojs('my-video');
+
 const animeId = searchParams.get('animeId');
-const dataId = searchParams.get('dataId');
-console.log("animeId:", animeId);  // Log the animeId value
-console.log("dataId:", dataId);    // Log the dataId value
+
 
   const bars = useRef(null)
   const all = useRef(null)
@@ -73,8 +71,8 @@ useEffect(() => {
   }
 
   try {
-    const { data } = await axios.get('https://hianimeapi-09b09f8b1d48.herokuapp.com/search', {
-      params: { keyword: search },
+    const { data } = await axios.get('http://localhost:3000/search', {
+      params: { q: search },
     });
     console.log(data)
     const results = data?.animeList || [];
@@ -98,6 +96,7 @@ const handleSubmit = (e) => {
   };
 
 const handleClick = (show) => {
+
   navigate(`/?letter=${show}`)
 };
 
@@ -105,7 +104,7 @@ console.log("animeId:", animeId);  // Log the animeId value
 
 useEffect(() => {
   axios
-    .get('https://hianimeapi-09b09f8b1d48.herokuapp.com/animeInfo', {
+    .get('http://localhost:3000/getAnimeInfo', {
       params: { animeId }
     })
     .then(response => {
@@ -118,25 +117,31 @@ useEffect(() => {
 }, [animeId]);
 
 
-useEffect(()=>{
-  axios
-  .get('https://hianimeapi-09b09f8b1d48.herokuapp.com/episodes', {
-    params: { dataId }
-  })
-  .then(response => {
-    console.log('Response:', response);
-    setAnimeEpisodes(response.data.episodes.sort((a, b) => a.number - b.number))
-    let episodeId = response.data.episodes[0].id
-    changeSource(episodeId)
 
+
+
+
+
+const changeSource = (episodeHref) => {
+axios
+      .get('http://localhost:3000/getEpisodeSource', {
+        params: { episodeHref }
       })
-  .catch(error => {
-    console.error('Error:', error);
-  })
-},[dataId])
-const changeSource = async (episodeId)=>{
-  frm.current.src= `https://megaplay.buzz/stream/s-2/${episodeId}/sub`
-}
+      .then(response => {
+        console.log('Response:', response);
+setVideoSrc(response.data.episodeSrc); // Let React handle the update
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+};
+
+useEffect(()=>{
+changeSource(episodeHref)
+  
+},[episodeHref])
+
+
   const [selectedRangeKey, setSelectedRangeKey] = useState(null);
 const hlsRef = useRef(null);
 const EpisodeBrowser = ({ 
@@ -151,10 +156,10 @@ const EpisodeBrowser = ({
   // Group episodes by real 100-blocks (but only include real ones)
   const grouped = {};
 
-  episodes.forEach((ep) => {
-    const rangeStart = Math.floor((ep.number - 1) / 100) * 100 + 1;
-    const rangeEnd = Math.max(rangeStart + 99, ep.number); // dynamic last block (e.g. 201–220)
-    const realEnd = Math.max(...episodes.map((e) => e.number)); // max episode number
+  episodes.forEach((ep,index) => {
+    const rangeStart = Math.floor((index) / 100) * 100 + 1;
+    const rangeEnd = Math.max(rangeStart + 99, index+1); // dynamic last block (e.g. 201–220)
+    const realEnd = Math.max(...episodes.map((e,index) => index+1)); // max episode number
     const correctedEnd = Math.min(rangeEnd, realEnd); // cap it
 
     const key = `${rangeStart}–${correctedEnd}`;
@@ -163,7 +168,8 @@ const EpisodeBrowser = ({
       grouped[key] = [];
     }
 
-    grouped[key].push(ep);
+    grouped[key].push({ episode: ep, globalIndex: index });
+
   });
 
   // Sort ranges numerically by rangeStart
@@ -172,12 +178,26 @@ const EpisodeBrowser = ({
     const startB = parseInt(b.split('–')[0], 10);
     return startA - startB;
   });
+useEffect(() => {
+    if (!selectedRangeKey && sortedKeys.length > 0) {
+      const shouldSelectFirst =
+        searchParams.get("flag") || localStorage.getItem("flag")  === "true";
 
-  useEffect(() => {
-  if (!selectedRangeKey && sortedKeys.length > 0) {
-    setSelectedRangeKey(sortedKeys[0]);
-  }
-}, [sortedKeys, selectedRangeKey]);
+      const selectedKey = shouldSelectFirst
+        ? sortedKeys[0] // First range
+        : sortedKeys[sortedKeys.length - 1]; // Last range
+
+      const episodesInRange = grouped[selectedKey];
+      const episode = shouldSelectFirst
+        ? episodesInRange[0] // First episode in range
+        : episodesInRange[episodesInRange.length - 1]; // Last episode in range
+
+      setSelectedRangeKey(selectedKey);
+      setSelectedEpisode(episode.globalIndex);
+    }
+  }, [sortedKeys, selectedRangeKey, searchParams]);
+
+
 
 
   return (
@@ -209,33 +229,80 @@ const EpisodeBrowser = ({
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         {selectedRangeKey && grouped && Array.isArray(grouped[selectedRangeKey]) &&
           grouped[selectedRangeKey]
-            .sort((a, b) => a.number - b.number)
-            .map((episode) => (
-              <button
-  key={episode.number}
-  onClick={() => {changeSource(episode.id);setSelectedEpisode(episode.number)}}
-  style={{
-    padding: '6px 10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    backgroundColor: selectedEpisode === episode.number ? '#5a2e98' : '#999',
-    color: selectedEpisode === episode.number ? '#fff' : '#000',
-    cursor: 'pointer',
-    width: '35px',
-    height: '35px',
-    textAlign: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }}
->
-  {episode.number}
-</button>
-            ))}
+  .map(({ episode, globalIndex }) => (
+    <button
+      key={globalIndex}
+      onClick={() => {
+        changeSource(episode.episodeHref);
+        setSelectedEpisode(globalIndex);
+      }}
+      style={{
+        padding: '6px 10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        backgroundColor: selectedEpisode === globalIndex ? '#5a2e98' : '#999',
+        color: selectedEpisode === globalIndex ? '#fff' : '#000',
+        cursor: 'pointer',
+        width: '35px',
+        height: '35px',
+        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {globalIndex + 1}
+    </button>
+  ))
+}
       </div>
     </div>
   );
 };
+useEffect(() => {
+  if (!videoSrc || !frm.current) return;
+
+  // Clear previous content
+  frm.current.innerHTML = '';
+
+  // Create video element manually
+  const videoElement = document.createElement('video');
+  videoElement.src = videoSrc;
+  videoElement.setAttribute('controls', '');
+  videoElement.setAttribute('autoplay', '');
+  videoElement.setAttribute('playsinline', '');
+videoElement.style.width = '100%';
+videoElement.style.height = 'auto'; // let it grow based on content
+videoElement.style.maxHeight = '80vh'; // optional cap for large screens
+videoElement.style.display = 'block';
+
+  frm.current.appendChild(videoElement);
+
+  const player = new Plyr(videoElement, {
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+    autoplay: true,
+  });
+
+  
+}, [videoSrc]);
+
+
+useEffect(()=>{
+  axios
+  .get('http://localhost:3000/getAnimeEpisodesInfo', {
+    params: { episodeHref }
+  })
+  .then(response => {
+    console.log('Response:', response);
+    setAnimeEpisodes(response.data.animeList)
+
+      })
+  .catch(error => {
+    console.error('Error:', error);
+  })
+},[episodeHref])
+
+
   return (
     <div>
       {allState && <div ref={all} className='all'></div>}
@@ -296,13 +363,13 @@ const EpisodeBrowser = ({
                       <div style={{position:'relative'}}>
                       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',width:'300px',borderRadius:'17px',backgroundColor:'#292929',paddingRight:'10px',marginLeft:"10px"}}>
                       <input value={search} onFocus={() => {if(results) ress.current.style.display='block';}}
-                 onChange={(e)=>{setSearch(e.target.value);handleSearch(e.target.value);}} autoComplete='off' placeholder='Enter anime name' type='text' id='search'/>
+                 onChange={(e)=>{setSearch(e.target.value);handleSearch(e.target.value);}} autoComplete='off' placeholder='أدخل اسم الأنمي' type='text' id='search'/>
                       <i id='icon' className="fa-solid fa-magnifying-glass"></i>
                       
                       </div>
                       <div ref={ress} id='ress'>
                         {results && results.map((elm,index)=>(
-                          <Link to={`/watch?dataId=${elm.dataId}&animeId=${elm.animeId}`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
+                          <Link to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=https://anime3rb.com/episode/${elm.animeId}/1`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
                             <div><img style={{objectFit:'cover',width:'50px',height:'50px',borderRadius:'50%'}} src={elm.poster}/></div>
                             <div style={{marginLeft:'10px'}}>
                               <p>{elm.title}</p>
@@ -324,39 +391,26 @@ const EpisodeBrowser = ({
         </div>
       </header>
       <div>
-        <p style={{margin:'20px 65px',color:'#666',fontSize:'1.2em',fontWeight:'bold'}}><span>Home &gt;</span> <span>{animeData && animeData.title}</span> </p>
+
+       
+        <p style={{margin:'20px 65px',color:'#666',fontSize:'1.2em',fontWeight:'bold'}}><span>{animeData && animeData.title}</span> </p>
       </div>
       <div>
       <div style={{display:'flex',justifyContent:'space-between'}}>
-      <div style={{
-  width: '100%',
-  maxWidth: '65%',  // Keeps the video container to a reasonable width
-  margin: '20px auto',  // Centers the container horizontally
-  position: 'relative',
-  paddingTop: '56.25%',  // Maintains a 16:9 aspect ratio (9 / 16 * 100 = 56.25%)
-  backgroundColor: '#000',  // Black background in case the iframe fails to load
-  borderRadius: '12px',  // Slightly rounded corners for a modern look
-  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',  // Optional shadow for visual depth
-  overflow: 'hidden',  // Prevents the iframe from overflowing
-}}>
-<iframe 
-ref={frm}
-    width="100%"
-    height="100%"
-    frameBorder="0"
-    scrolling="no"
-    allowFullScreen
+    <div
+  id='vid'
+>
+  <div
+    ref={frm}
+    id="player-container"
     style={{
-      position: 'absolute',  // Keeps the iframe in position inside the container
-      top: '0', 
-      left: '0',
-      width: '100%',  // Ensures iframe fills the container's width
-      height: '100%',  // Ensures iframe fills the container's height
+      width: '100%',
+      height: 'auto', // fit content height
     }}
-  ></iframe>
-  
-
+  />
 </div>
+
+
 
 
 <div id="filter">
@@ -439,20 +493,23 @@ ref={frm}
 </div>
 <div style={{color:'gray'}}>
   <h1 style={{color:'white'}}>{animeData && animeData.title}</h1><br/>
-  <p style={{textAlign:'justify'}}>{animeData && animeData.description}</p><br/>
-  <div style={{display:'flex',justifyContent:'space-between'}}>
-    <div>
-  <p>Type : <span style={{color:'#eee'}}>{animeData?.type || 'N/A'}</span></p>
-  <p>Studios : <span style={{color:'#eee'}}>{animeData?.studios || 'N/A'}</span></p>
-  <p>Status : <span style={{color:'#eee'}}>{animeData?.status || 'N/A'}</span></p>
-  <p>Genre : <span style={{color:'#eee'}}>{animeData?.genres?.join(', ') || 'N/A'}</span></p>
-  <p>Duration : <span style={{color:'#eee'}}>{animeData?.duration || 'N/A'}</span></p>
+  <p style={{direction:'rtl',textAlign:'justify'}}>{animeData && animeData.desc}</p><br/>
+  <div>
+    <div style={{ direction: 'rtl', fontFamily: "'Cairo', sans-serif", color: '#fff', lineHeight: '1.6', marginBottom: '1rem', textAlign: 'right' }}>
+  <p><span style={{ fontWeight: 'bold' }}>إصدار:</span> <span style={{ color: '#eee' }}>{animeData?.isdar || 'N/A'}</span></p>
+  <p><span style={{ fontWeight: 'bold' }}>المخرج:</span> <span style={{ color: '#eee' }}>{animeData?.director?.join(', ') || 'N/A'}</span></p>
+  <p><span style={{ fontWeight: 'bold' }}>المؤلف:</span> <span style={{ color: '#eee' }}>{animeData?.editor || 'N/A'}</span></p>
+  <p><span style={{ fontWeight: 'bold' }}>التقييم:</span> <span style={{ color: '#eee' }}>{animeData?.rating || 'N/A'}</span></p>
 </div>
-<div>
-  <p>Aired : <span style={{color:'#eee'}}>{animeData?.aired || 'N/A'}</span></p>
-  <p>Premiered : <span style={{color:'#eee'}}>{animeData?.premiered || 'N/A'}</span></p>
-  <p>Producers : <span style={{color:'#eee'}}>{animeData?.producers?.join(', ') || 'N/A'}</span></p>
+
+<div style={{ direction: 'rtl', fontFamily: "'Cairo', sans-serif", color: '#fff', lineHeight: '1.6', textAlign: 'right' }}>
+  <p><span style={{ fontWeight: 'bold' }}>التصنيف العمري:</span> <span style={{ color: '#eee' }}>{animeData?.classAge || 'N/A'}</span></p>
+  <p><span style={{ fontWeight: 'bold' }}>الاستديو:</span> <span style={{ color: '#eee' }}>{animeData?.studio || 'N/A'}</span></p>
+  <p><span style={{ fontWeight: 'bold' }}>صنف:</span> <span style={{ color: '#eee' }}>{animeData?.genres?.join(', ') || 'N/A'}</span></p>
 </div>
+
+
+
 
     <div>
     </div>
@@ -461,8 +518,8 @@ ref={frm}
 </div>
         </div>
       <div style={{position:'relative',padding:'10px',backgroundColor:'#222',width:'100%',height:'fit-content',paddingBottom:'30px'}}>
-        <img id='maga' src='https://9animetv.to/images/footer-icon.png'/>
-          <p style={{color:'gray',marginLeft:'15px'}}>A-Z LIST   |   Searching anime order by alphabet name A to Z.</p>
+        <img id='foo' src='https://9animetv.to/images/footer-icon.png'/>
+          <p style={{textAlign:'center',direction:'rtl',color:'gray',marginLeft:'15px'}}>قائمة A-Z | البحث عن الأنمي حسب اسم الأبجدية من A إلى Z.</p>
           <div className='alphabet'>
             <span onClick={() => handleClick('')}>#</span>
             <span onClick={() => handleClick('0-9')}>0-9</span>
@@ -493,15 +550,15 @@ ref={frm}
             <span onClick={() => handleClick('Y')}>Y</span>
             <span onClick={() => handleClick('Z')}>Z</span>
           </div>
-          <span style={{color:'white',fontSize:'2.2em',margin:'0 5px'}}><span style={{backgroundColor:'#5a2e98',borderRadius:'50%',fontSize:'1.1em',padding:'5px',fontWeight:'bold'}}>11</span><span style={{marginLeft:'2px',fontStyle:'italic',fontWeight:'bold'}}>Anime</span></span>
-          <p style={{color:'gray',margin:'15px'}}>Copyright © 11anime. All Rights Reserved</p>
-          <div style={{color:'#fff',fontSize:"1.3em",margin:'15px'}}>
+          <div style={{textAlign:'center'}}><span style={{color:'white',fontSize:'2.2em',margin:'0 5px'}}><span style={{backgroundColor:'#5a2e98',borderRadius:'50%',fontSize:'1.1em',padding:'5px',fontWeight:'bold'}}>11</span><span style={{marginLeft:'2px',fontStyle:'italic',fontWeight:'bold'}}>Anime</span></span></div>
+          <p style={{textAlign:'center',direction:'rtl',color:'gray',margin:'15px'}}>© 11anime. جميع الحقوق محفوظة</p>
+          <div style={{textAlign:'center',direction:'rtl',color:'#fff',fontSize:"1.3em",margin:'15px'}}>
               <i className="fa-brands fa-x-twitter"></i>
               <i className="fa-brands fa-square-reddit"></i>
               <i className="fa-brands fa-facebook"></i>
               <i className="fa-brands fa-instagram"></i>
             </div>
-            <p style={{color:'gray',margin:'15px'}}>Disclaimer: This site does not store any files on its server. All contents are provided by non-affiliated third parties.</p>
+            <p style={{textAlign:'center',direction:'rtl',color:'gray',margin:'15px'}}>إخلاء المسؤولية: لا يخزّن هذا الموقع أي ملفات على خادمه. جميع محتوياته مقدمة من جهات خارجية مستقلة.</p>
             
       </div>
     </div>

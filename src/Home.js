@@ -3,6 +3,7 @@ import './Home.css'
 import axios from 'axios'
 import { useSearchParams,useNavigate,Link } from 'react-router-dom';
 function Home() {
+
    const navigate = useNavigate();
   const bars = useRef(null)
   const ress= useRef(null)
@@ -16,9 +17,37 @@ const [genree,setGenree1] = useState('')
 const [typee,setTypee1] = useState('')
 const [statuse,setStatuse1] = useState('')
 
+/*
+    setTitle(response.data.animeInfo.title)
+    setPoster(response.data.animeInfo.poster)
+    setState(response.data.animeInfo.state)
+    setIsdar(response.data.animeInfo.isdar)
+    setStudio(response.data.animeInfo.studio)
+    setDirector(response.data.ansimeInfo.director)
+    setEditor(response.data.animeInfo.editor)
+    setRating(response.data.animeInfo.rating)
+    setClassAge(response.data.animeInfo.classAge)
+    setGenres(response.data.animeInfo.genres)
+    setDesc(response.data.animeInfo.desc)
 
+*/
 
+const [title,setTitle] = useState('')
+const [poster,setPoster] = useState('')
 
+const [state,setState] = useState('')
+const [isdar,setIsdar] = useState('')
+
+const [studio,setStudio] = useState('')
+const [director,setDirector] = useState('')
+
+const [editor,setEditor] = useState('')
+const [rating,setRating] = useState('')
+
+const [classAge,setClassAge] = useState('')
+const [genres, setGenres] = useState('')
+
+const [desc,setDesc] = useState('')
 
 
 
@@ -39,29 +68,29 @@ const [searchParams] = useSearchParams();
   const typee1 = searchParams.get('type');
   const statuse1 = searchParams.get('status');
   const handleSearch = async (search) => {
-    if (!search.trim()) {
-      setResults(null);
+  if (!search.trim()) {
+    setResults(null);
+    ress.current.style.display = 'none';
+    return;
+  }
+
+  try {
+    const { data } = await axios.get('http://localhost:3000/search', {
+      params: { q: search },
+    });
+    console.log(data)
+    const results = data?.animeList || [];
+    setResults(results);
+    if(ress.current)
+      ress.current.style.display = results.length > 0 ? 'block' : 'none';
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    // Optionally hide results or show error state
+    if(ress.current)
       ress.current.style.display = 'none';
-      return;
-    }
-  
-    try {
-      const { data } = await axios.get('https://hianimeapi-09b09f8b1d48.herokuapp.com/search', {
-        params: { keyword: search },
-      });
-      console.log(data)
-      const results = data?.animeList || [];
-      setResults(results);
-      if(ress.current)
-        ress.current.style.display = results.length > 0 ? 'block' : 'none';
-  
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Optionally hide results or show error state
-      if(ress.current)
-        ress.current.style.display = 'none';
-    }
-  };
+  }
+};
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -77,17 +106,7 @@ const [searchParams] = useSearchParams();
     };
   }, []);
   
-  const [duration,setDuration]=useState('')
-  const [genres,setGenres]=useState('')
-  const [numberOfEpisodes,setnumberOfEpisodes]=useState('')
-  const [producers,setProducers]=useState('')
-  const [released,setReleased]=useState('')
-  const [season,setSeason]=useState('')
-  const [statuss,setStatuss]=useState('')
-  const [studio,setStudio]=useState('')
-  const [synopsis,setSynopsis]=useState('')
-  const [updatedOn,setUpdatedOn]=useState('')
-  const [tv,setTv]=useState('')
+ 
 
   const [isHovered,setIsHovered] = useState(false)
   const [isSignIn,setIsSignIn] = useState(false)
@@ -149,7 +168,7 @@ const totalPages = Math.ceil((recUpd?.length || 0) / itemsPerPage);
     const fetchData = async (page=1) => {
       try {
          
-        const response = await axios.get(`https://hianimeapi-09b09f8b1d48.herokuapp.com/?category=tv&page=${page}`, {
+        const response = await axios.get(`http://localhost:3000/getLatestAnimes?page=${page}`, {
       type:'tv',
     })
         console.log(response)
@@ -161,34 +180,14 @@ const totalPages = Math.ceil((recUpd?.length || 0) / itemsPerPage);
     };
 
      if (letter) {
+localStorage.setItem("flag", "true");
+
       handleClick(letter);
-    }else if(genree1 && typee1 && statuse1)
-      {
-setLoading2(true)
-
-      axios.get('https://hianimeapi-09b09f8b1d48.herokuapp.com/filter', {
-    params: {
-      genree: genree1,
-      typee: typee1,
-      statuse: statuse1,
-      page: 1
     }
-  })
-    .then(response => {
-      console.log('Response:', response);
-      ti.current.textContent = 'Filtered Anime'
-      setRecUpd(response.data?.animeList || []);
-        setLoading2(false)
-
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-      }
     else{
     fetchData();
     }
-  }, [letter,genree1,typee1,statuse1]);
+  }, [letter]);
   
 
 
@@ -226,14 +225,15 @@ const handleSubmit = (e) => {
 };
 
    const handleClick = (show) => {
+localStorage.setItem("flag", "true")
 setCurrentPage(1)
         setLoading2(true)
 
-    window.location.href="#ancre"
+    window.location.href = "#ancre"
   setRecUpd(null);
-    ti.current.textContent = show ? 'Letter ' + show : 'All' ;
+    ti.current.textContent = show ?  show +' ' + 'الحرف  '  : 'الكل ' ;
 
-  axios.get(`https://hianimeapi-09b09f8b1d48.herokuapp.com/search?keyword=${show}`)
+  axios.get(`http://localhost:3000/search?q=${show}`)
   .then(response => {
     console.log('Response:', response);
     const newData = response.data.animeList || [];
@@ -310,7 +310,7 @@ useEffect(() => {
         disabled={currentPage === 1}
         className='bb'
       >
-        Previous
+        السابق
       </button>
 
       {pages.map((page, index) => {
@@ -347,7 +347,7 @@ useEffect(() => {
         disabled={currentPage === totalPages}
         style={{ cursor:'pointer',backgroundColor:'#5a2e98',color:'white',outline:'none',border:'none',borderRadius:'15px',margin: '0 5px', padding: '8px 12px' }}
       >
-        Next
+        التالي
       </button>
     </div>
   );
@@ -359,17 +359,27 @@ useEffect(() => {
 }, [recUpd]);
 
 const handleMouseEnter = (animeId, index) => {
-  setAired("");
-  setTypee("");
-  setPremiered("");
-  setSynopsis("");
-  setStudio("");
-  setStatuss("");
-  setProducers("");
-  setHoveredIndex(null);
-  setnumberOfEpisodes("");
-  setDuration("");
-  setGenres("");
+  /*setTitle(response.data.animeInfo.title)
+    setPoster(response.data.animeInfo.poster)
+    setState(response.data.animeInfo.state)
+    setIsdar(response.data.animeInfo.isdar)
+    setStudio(response.data.animeInfo.studio)
+    setDirector(response.data.animeInfo.director)
+    setEditor(response.data.animeInfo.editor)
+    setRating(response.data.animeInfo.rating)
+    setClassAge(response.data.animeInfo.classAge)
+    setGenres(response.data.animeInfo.genres)
+    setDesc(response.data.animeInfo.desc)*/
+  setTitle("");
+  setState("");
+  setIsdar("");
+   setStudio("");
+  setDirector("");
+   setEditor("");
+   setRating("");
+  setClassAge(null);
+  setGenres("")
+  setDesc("");
   const rect = refs.current[index].getBoundingClientRect();
   const tooltipWidth = 300;
   const padding = 10;
@@ -389,7 +399,7 @@ const handleMouseEnter = (animeId, index) => {
   setHoveredIndex(index);
 setLoading(true);
   axios
-  .get('https://hianimeapi-09b09f8b1d48.herokuapp.com/animeInfo', {
+  .get('http://localhost:3000/getAnimeInfo', {
     params: { animeId }
   })
   .then(response => {
@@ -398,15 +408,17 @@ setLoading(true);
 
 
 
-    setDuration(response.data.animeInfo.duration)
-    setGenres(response.data.animeInfo.genres.join(', '))
-    setProducers(response.data.animeInfo.producers.join(', '))
-    setStatuss(response.data.animeInfo.status)
-    setStudio(response.data.animeInfo.studios)
-    setSynopsis(response.data.animeInfo.description)
-    setAired(response.data.animeInfo.aired)
-    setPremiered(response.data.animeInfo.premiered)
-    setTypee(response.data.animeInfo.type)
+    setTitle(response.data.animeInfo.title)
+    setPoster(response.data.animeInfo.poster)
+    setState(response.data.animeInfo.state)
+    setIsdar(response.data.animeInfo.isdar)
+    setStudio(response.data.animeInfo.studio)
+    setDirector(response.data.animeInfo.director)
+    setEditor(response.data.animeInfo.editor)
+    setRating(response.data.animeInfo.rating)
+    setClassAge(response.data.animeInfo.classAge)
+    setGenres(response.data.animeInfo.genres)
+    setDesc(response.data.animeInfo.desc)
   })
   .catch(error => {
     console.error('Error:', error);
@@ -478,13 +490,13 @@ setLoading(true);
             <div style={{position:'relative'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',width:'300px',borderRadius:'17px',backgroundColor:'#292929',paddingRight:'10px',marginLeft:"10px"}}>
             <input value={search} onFocus={() => {if(results) ress.current.style.display='block';}}
-       onChange={(e)=>{setSearch(e.target.value);handleSearch(e.target.value);}} autoComplete='off' placeholder='Enter anime name' type='text' id='search'/>
+       onChange={(e)=>{setSearch(e.target.value);handleSearch(e.target.value);}} autoComplete='off' placeholder='أدخل اسم الأنمي' type='text' id='search'/>
             <i id='icon' className="fa-solid fa-magnifying-glass"></i>
             
             </div>
             <div ref={ress} id='ress'>
               {results && results.map((elm,index)=>(
-                <Link to={`/watch?dataId=${elm.dataId}&animeId=${elm.animeId}`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
+                <Link to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=https://anime3rb.com/episode/${elm.animeId}/1`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
                   <div><img style={{objectFit:'cover',width:'50px',height:'50px',borderRadius:'50%'}} src={elm.poster}/></div>
                   <div style={{marginLeft:'10px'}}>
                     <p>{elm.title}</p>
@@ -507,60 +519,64 @@ setLoading(true);
       </header>
       <main ref={slideshow} className="slideshow-container">
         <div className='fadeToBlack'></div>
-        <Link to='/watch?dataId=2&animeId=hunter-x-hunter-2'><div  className="mySlides">
+        <Link to='/watch?flag=true&animeId=hunter-x-hunter-2011&episodeHref=https://anime3rb.com/episode/hunter-x-hunter-2011/1'><div  className="mySlides">
                 <div className="numbertext">1 / 5</div>
                 <img className="fade" src="https://worldofgeek.fr/wp-content/uploads/2025/07/hunter-x-hunter-nen-impact-1200x571.jpg" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">Hunter x Hunter (2011)</div>
-                <div className='desc'>Hunters devote themselves to accomplishing hazardous tasks, all from traversing the world’s uncharted territories...</div>
+                <div className='desc'>يكرس الصيادون أنفسهم لإنجاز المهام الخطرة، كل ذلك من عبور مناطق العالم المجهولة إلى تحديد العناصر النادرة والوحوش. قبل أن يصبح المرء صيادًا....</div>
                 </div>
-                <button className='button'>Watch Now</button>
+                <button className='button'>شاهد الآن</button>
                 </div>
             </div></Link>
-        <Link to='/watch?dataId=100&animeId=one-piece-100'><div  className="mySlides">
+        <Link to='/watch?flag=true&animeId=one-piece&episodeHref=https://anime3rb.com/episode/one-piece/1'><div  className="mySlides">
                 <div className="numbertext">2 / 5</div>
                 <img className="fade" src="https://cdna.artstation.com/p/assets/images/images/052/674/042/large/elix-asset.jpg?1660391448" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">One Piece</div>
-                <div className='desc'>Gold Roger was known as the “Pirate King,” the strongest and most infamous being to have sailed the Grand Line....</div>
+                <div className='desc'>بالكاد نجا مونكي دي لوفي في في برميل بعد مروره عبر دوامة رهيبة في البحر، وينتهي به الأمر على متن سفينة تتعرض لهجوم من قبل قراصنة مخيفين...</div>
                 </div>
-                <button className='button'>Watch Now</button>
+                <button className='button'>شاهد الآن</button>
                 </div>
         </div></Link>
-        <Link to='/watch?dataId=112&animeId=attack-on-titan-112'><div  className="mySlides">
+        <Link to='/watch?flag=true&animeId=shingeki-no-kyojin&episodeHref=https://anime3rb.com/episode/shingeki-no-kyojin/1'><div  className="mySlides">
                 <div className="numbertext">3 / 5</div>
                 <img className="fade" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9f2fcbc8-1efd-4a10-aa26-f4d8fbf53f35/d6n4i7m-6744e406-bb25-4556-b1c4-f5e7e2ee8a41.jpg/v1/fill/w_851,h_315,q_75,strp/shingeki_no_kyojin_facebook_banner_by_jondedy_d6n4i7m-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MzE1IiwicGF0aCI6IlwvZlwvOWYyZmNiYzgtMWVmZC00YTEwLWFhMjYtZjRkOGZiZjUzZjM1XC9kNm40aTdtLTY3NDRlNDA2LWJiMjUtNDU1Ni1iMWM0LWY1ZTdlMmVlOGE0MS5qcGciLCJ3aWR0aCI6Ijw9ODUxIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.jVDBOkhV_bxO2PVV0GnyP7sdvZdp_tYjpEsa1wZWcS8" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
 
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">Attack on Titan (2013)</div>
-                <div className='desc'>Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called Titans....</div>
+                <div className='desc'>منذ قرون، تم ذبح البشرية حتى كادت أن تنقرض على يد مخلوقات بشرية وحشية تسمى جبابرة، مما أجبر البشر على الاختباء في خوف خلف جدران...</div>
                 </div>
-                <button className='button'>Watch Now</button>
+                <button className='button'>شاهد الآن</button>
                 </div>
         </div></Link>
-        <Link to='/watch?dataId=19413&animeId=solo-leveling-season-2-arise-from-the-shadow-19413'><div  className="mySlides">
+        <Link to='/watch?flag=true&animeId=one-punch-man&episodeHref=https://anime3rb.com/episode/one-punch-man/1'><div  className="mySlides">
                 <div className="numbertext">4 / 5</div>
-                <img className="fade" src="https://www.thathashtagshow.com/wp-content/uploads/2025/01/SoloLeveling_S2_KV1_16x9_3840x2160-1280x640.png" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img className="fade" src="https://www.journaldujapon.com/wp-content/uploads/2016/09/25220.jpg" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
-                <div className="text noFade">Solo Leveling Season 2: Arise from the Shadow (2025)</div>
-                <div className='desc'>Sung Jin-Woo, dubbed the weakest hunter of all mankind, grows stronger by the day with the supernatural powers....</div>
+                <div className="text noFade">One Punch Man</div>
+                <div className='desc'>يتمتع سايتاما الذي يبدو متواضعًا بهواية فريدة إلى حد ما: أن تكون بطلاً. من أجل تحقيق حلم طفولته، تدرب سايتاما بلا هوادة لمدة ثلاث سنوات...</div>
                 </div>
-                <button className='button'>Watch Now</button>
+                <button className='button'>شاهد الآن</button>
                 </div>
         </div></Link>
-        <Link to="/watch?dataId=677&animeId=naruto-677"><div  className="mySlides">
+
+
+
+
+        <Link to="/watch?flag=true&animeId=naruto&episodeHref=https://anime3rb.com/episode/naruto/1"><div  className="mySlides">
                 <div className="numbertext">5 / 5</div>
                 <img className="fade" src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2025/02/naruto-header.jpg?q=70&fit=crop&w=1100&h=618&dpr=1" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">Naruto (2002)</div>
-                <div className='desc'>Twelve years ago, a colossal demon fox terrorized the world. During the monster’s attack on the Hidden....</div>
+                <div className='desc'>قبل لحظات من ولادة ناروتو أوزوماكي، هاجم شيطان ضخم يُعرف باسم كيووبي، الثعلب ذو الذيل التسعة، كونوهاغاكوري، قرية الأوراق المخفية...</div>
                 </div>
-                <button className='button'>Watch Now</button>
+                <button className='button'>شاهد الآن</button>
                 </div>
 
                 
@@ -572,7 +588,7 @@ setLoading(true);
 
       <div style={{display:'flex',height:'fit-content',paddingBottom:'150px'}}>
         <div id='apps'>
-          <h1 ref={ti} id='ancre' style={{color:'#fff',fontSize:'1.2em',margin:'15px'}}>Recently updated</h1>
+          <h1 ref={ti} id='ancre' style={{color:'#fff',fontSize:'1.2em',margin:'15px',textAlign:'center'}}>آخر الحلقات</h1>
           <div>
             
           <div style={{ position: 'relative',display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -598,7 +614,18 @@ setLoading(true);
               position: 'relative',
               cursor: 'pointer',
             }}
-            onClick={()=>navigate(`/watch?dataId=${elm.dataId}&animeId=${elm.animeId}`)}
+           onClick={() => {
+  const flag = localStorage.getItem('flag') == 'true';
+
+  
+const episodeHref = flag 
+    ? `https://anime3rb.com/episode/${elm.animeId}/1`
+    : elm.episodeHref;
+
+  navigate(`/watch?animeId=${elm.animeId}&episodeHref=${encodeURIComponent(episodeHref)}`);
+}}
+
+
           >
             <img
               src={elm.poster}
@@ -622,7 +649,7 @@ setLoading(true);
                 marginTop: '5px',
               }}
             >
-              {elm.title}
+              {elm.episodeName} {elm.title}
             </p>
 
             {hoveredIndex === index && (
@@ -642,7 +669,9 @@ setLoading(true);
                   transform: 'translateY(-50%)',
                 }}
               >
-                <strong>{elm.title}</strong>
+
+              
+                <strong>{title}</strong>
                 <br />
                 {loading ? (
                   <div className="spinner"></div>
@@ -656,18 +685,22 @@ setLoading(true);
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         marginBottom: '10px',
+			direction:'rtl'
                       }}
                     >
-                      {synopsis?.trim() ? synopsis : 'N/A'}
+                      {desc?.trim() ? desc : 'N/A'}
                     </p>
-                    <p>Genres : {genres || 'N/A'}</p>
-                    <p>Producers : {producers || 'N/A'}</p>
-                    <p>Status : {statuss || 'N/A'}</p>
-                    <p>Studio : {studio || 'N/A'}</p>
-                    <p>Aired : {aired || 'N/A'}</p>
-                    <p>Premiered : {premiered || 'N/A'}</p>
-                    <p>Type : {typeee || 'N/A'}</p>
-                    <p>Duration : {duration ? duration + '/ep' : 'N/A'}</p>
+                   <div className="arabic-info">
+  <p>الحالة: {state || 'N/A'}</p>
+  <p>إصدار: {isdar || 'N/A'}</p>
+  <p>الاستديو: {studio || 'N/A'}</p>
+  <p>المخرج: {director.join(', ') || 'N/A'}</p>
+  <p>المؤلف: {editor || 'N/A'}</p>
+  <p>التقييم: {rating || 'N/A'}</p>
+  <p>التصنيف العمري: {classAge || 'N/A'}</p>
+  <p>صنف: {genres.join(', ') || 'N/A'}</p>
+</div>
+
                   </>
                 )}
               </div>
@@ -761,8 +794,8 @@ setLoading(true);
     
     </div>
       <div style={{position:'relative',padding:'10px',backgroundColor:'#222',width:'100%',height:'fit-content',paddingBottom:'30px'}}>
-        <img style={{position:'absolute',right:'10px',width:'180px'}} src='https://9animetv.to/images/footer-icon.png'/>
-          <p style={{color:'gray',marginLeft:'15px'}}>A-Z LIST   |   Searching anime order by alphabet name A to Z.</p>
+        <img id='foo' src='https://9animetv.to/images/footer-icon.png'/>
+          <p style={{textAlign:'center',direction:'rtl',color:'gray',marginLeft:'15px'}}>قائمة A-Z | البحث عن الأنمي حسب اسم الأبجدية من A إلى Z.</p>
           <div className='alphabet'>
             <span onClick={() => handleClick('')}>#</span>
             <span onClick={() => handleClick('0-9')}>0-9</span>
@@ -793,15 +826,15 @@ setLoading(true);
             <span onClick={() => handleClick('Y')}>Y</span>
             <span onClick={() => handleClick('Z')}>Z</span>
           </div>
-          <span style={{color:'white',fontSize:'2.2em',margin:'0 5px'}}><span style={{backgroundColor:'#5a2e98',borderRadius:'50%',fontSize:'1.1em',padding:'5px',fontWeight:'bold'}}>11</span><span style={{marginLeft:'2px',fontStyle:'italic',fontWeight:'bold'}}>Anime</span></span>
-          <p style={{color:'gray',margin:'15px'}}>Copyright © 11anime. All Rights Reserved</p>
-          <div style={{color:'#fff',fontSize:"1.3em",margin:'15px'}}>
+          <div style={{textAlign:'center'}}><span style={{color:'white',fontSize:'2.2em',margin:'0 5px'}}><span style={{backgroundColor:'#5a2e98',borderRadius:'50%',fontSize:'1.1em',padding:'5px',fontWeight:'bold'}}>11</span><span style={{marginLeft:'2px',fontStyle:'italic',fontWeight:'bold'}}>Anime</span></span></div>
+          <p style={{textAlign:'center',direction:'rtl',color:'gray',margin:'15px'}}>© 11anime. جميع الحقوق محفوظة</p>
+          <div style={{textAlign:'center',direction:'rtl',color:'#fff',fontSize:"1.3em",margin:'15px'}}>
               <i className="fa-brands fa-x-twitter"></i>
               <i className="fa-brands fa-square-reddit"></i>
               <i className="fa-brands fa-facebook"></i>
               <i className="fa-brands fa-instagram"></i>
             </div>
-            <p style={{color:'gray',margin:'15px'}}>Disclaimer: This site does not store any files on its server. All contents are provided by non-affiliated third parties.</p>
+            <p style={{textAlign:'center',direction:'rtl',color:'gray',margin:'15px'}}>إخلاء المسؤولية: لا يخزّن هذا الموقع أي ملفات على خادمه. جميع محتوياته مقدمة من جهات خارجية مستقلة.</p>
             
       </div></>
   )
