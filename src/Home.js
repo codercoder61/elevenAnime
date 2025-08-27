@@ -2,11 +2,9 @@ import React,{useRef,useState,useEffect} from 'react'
 import './Home.css'
 import axios from 'axios'
 import { useSearchParams,useNavigate,Link } from 'react-router-dom';
-import CryptoJS from 'crypto-js';
 
 
 function Home() {
-const secretKey = 'oupsligaliga'; // Must be the same on both routes
 
    const navigate = useNavigate();
   const bars = useRef(null)
@@ -644,12 +642,10 @@ const episodeHref = flag
     ? `https://anime3rb.com/episode/${elm.animeId}/1`
     : elm.episodeHref;
 
-			           const encryptedEpisodeHref = encodeURIComponent(
-          CryptoJS.AES.encrypt(JSON.stringify(episodeHref), secretKey).toString()
-        );
+			         
 
         navigate(
-          `/watch?animeId=${elm.animeId}&episodeHref=${encryptedEpisodeHref}`
+          `/watch?animeId=${elm.animeId}&episodeHref=${episodeHref}`
         );
 
 
