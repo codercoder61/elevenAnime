@@ -500,15 +500,10 @@ setLoading(true);
             </div>
             <div ref={ress} id='ress'>
               {results && results.map((elm,index)=>{
-  const episodeUrl = `https://anime3rb.com/episode/${elm.animeId}/1`;
-  const encryptedEpisodeHref = encodeURIComponent(
-    CryptoJS.AES.encrypt(JSON.stringify(episodeUrl), secretKey).toString()
-  );
-
   return (
     <Link
       key={index}
-      to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=${encryptedEpisodeHref}`}
+      to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=https://anime3rb.com/episode/${elm.animeId}/1`}
     >
       <div style={{ margin: '10px 0', display: 'flex', alignItems: 'center' }}>
         <div>
