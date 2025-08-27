@@ -275,10 +275,7 @@ useEffect(() => {
   videoElement.setAttribute('controls', '');
   videoElement.setAttribute('autoplay', '');
   videoElement.setAttribute('playsinline', '');
-videoElement.style.width = '100%';
-videoElement.style.height = 'auto'; // let it grow based on content
-videoElement.style.maxHeight = '80vh'; // optional cap for large screens
-videoElement.style.display = 'block';
+  videoElement.classList.add('fop')
 
   frm.current.appendChild(videoElement);
 
