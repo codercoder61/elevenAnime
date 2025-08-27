@@ -170,9 +170,7 @@ const totalPages = Math.ceil((recUpd?.length || 0) / itemsPerPage);
     const fetchData = async (page=1) => {
       try {
          
-        const response = await axios.get(`https://api.soc-net.info/getLatestAnimes?page=${page}`, {
-      type:'tv',
-    })
+        const response = await axios.get(`https://api.soc-net.info/getLatestAnimes?page=${page}`)
         console.log(response)
         setRecUpd(response.data.animeList)
         setLoading2(false)
