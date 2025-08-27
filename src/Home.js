@@ -2,7 +2,11 @@ import React,{useRef,useState,useEffect} from 'react'
 import './Home.css'
 import axios from 'axios'
 import { useSearchParams,useNavigate,Link } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
+
+
 function Home() {
+const secretKey = 'oupsligaliga'; // Must be the same on both routes
 
    const navigate = useNavigate();
   const bars = useRef(null)
@@ -495,14 +499,37 @@ setLoading(true);
             
             </div>
             <div ref={ress} id='ress'>
-              {results && results.map((elm,index)=>(
-                <Link to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=https://anime3rb.com/episode/${elm.animeId}/1`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
-                  <div><img style={{objectFit:'cover',width:'50px',height:'50px',borderRadius:'50%'}} src={elm.poster}/></div>
-                  <div style={{marginLeft:'10px'}}>
-                    <p>{elm.title}</p>
-                  </div>
-                </div></Link>
-              ))}
+              {results && results.map((elm,index)=>{
+  const episodeUrl = `https://anime3rb.com/episode/${elm.animeId}/1`;
+  const encryptedEpisodeHref = encodeURIComponent(
+    CryptoJS.AES.encrypt(JSON.stringify(episodeUrl), secretKey).toString()
+  );
+
+  return (
+    <Link
+      key={index}
+      to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=${encryptedEpisodeHref}`}
+    >
+      <div style={{ margin: '10px 0', display: 'flex', alignItems: 'center' }}>
+        <div>
+          <img
+            style={{
+              objectFit: 'cover',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+            }}
+            src={elm.poster}
+            alt={elm.title}
+          />
+        </div>
+        <div style={{ marginLeft: '10px' }}>
+          <p>{elm.title}</p>
+        </div>
+      </div>
+    </Link>
+  );
+})}
             </div>
             </div>
             <div id='soc'>
@@ -622,7 +649,15 @@ const episodeHref = flag
     ? `https://anime3rb.com/episode/${elm.animeId}/1`
     : elm.episodeHref;
 
-  navigate(`/watch?animeId=${elm.animeId}&episodeHref=${encodeURIComponent(episodeHref)}`);
+			           const encryptedEpisodeHref = encodeURIComponent(
+          CryptoJS.AES.encrypt(JSON.stringify(episodeHref), secretKey).toString()
+        );
+
+        navigate(
+          `/watch?animeId=${elm.animeId}&episodeHref=${encryptedEpisodeHref}`
+        );
+
+
 }}
 
 
