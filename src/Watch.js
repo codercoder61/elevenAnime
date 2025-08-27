@@ -275,7 +275,19 @@ useEffect(() => {
   videoElement.setAttribute('controls', '');
   videoElement.setAttribute('autoplay', '');
   videoElement.setAttribute('playsinline', '');
-  videoElement.classList.add('fop')
+  videoElement.style.width = '100%';
+videoElement.style.height = 'auto';
+videoElement.style.maxHeight = '80vh';
+videoElement.style.display = 'block';
+
+if (window.innerWidth <= 775) {
+  videoElement.style.width = '100vw';
+  videoElement.style.height = '100vh';
+  videoElement.style.maxWidth = 'unset';
+  videoElement.style.maxHeight = 'unset';
+  videoElement.style.objectFit = 'contain';
+}
+
 
   frm.current.appendChild(videoElement);
 
