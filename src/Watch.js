@@ -4,11 +4,9 @@ import axios from 'axios'
 import { useSearchParams,Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Plyr from 'plyr';
-import CryptoJS from 'crypto-js';
 
 function Watch() {
 localStorage.clear();
-const secretKey = 'oupsligaliga';
   const [searchParams] = useSearchParams();
 
   const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHref'));
