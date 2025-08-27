@@ -5,6 +5,14 @@ import { useSearchParams,Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Plyr from 'plyr';
 
+
+function getEpisodeFromURL() {
+  const parts = window.location.pathname.split('/');
+  const epNum = parseInt(parts[parts.length - 1], 10);
+  return isNaN(epNum) ? null : epNum;
+}
+
+
 function Watch() {
 localStorage.clear();
   const [searchParams] = useSearchParams();
@@ -247,6 +255,7 @@ useEffect(() => {
   .map(({ episode, globalIndex }) => (
     <button
       key={globalIndex}
+         id={`episode-btn-${globalIndex}`}
       onClick={() => {
         changeSource(episode.episodeHref);
         setSelectedEpisode(globalIndex);
@@ -325,6 +334,40 @@ useEffect(()=>{
   })
 },[episodeHref])
 
+useEffect(() => {
+  const urlEpisode = getEpisodeFromURL(); // e.g., 12
+
+  if (urlEpisode && episodes.length > 0 && grouped && sortedKeys.length > 0) {
+    const globalIndex = urlEpisode - 1;
+    
+    // Find which range key contains this episode
+    const matchingRange = sortedKeys.find((key) => {
+      const [start, end] = key.split('–').map(Number);
+      return urlEpisode >= start && urlEpisode <= end;
+    });
+
+    if (matchingRange) {
+      setSelectedRangeKey(matchingRange);
+      setSelectedEpisode(globalIndex);
+    }
+  } else if (!selectedRangeKey && sortedKeys.length > 0) {
+    // Fallback behavior if no episode in URL
+    const shouldSelectFirst =
+      searchParams.get("flag") || localStorage.getItem("flag") === "true";
+
+    const selectedKey = shouldSelectFirst
+      ? sortedKeys[0]
+      : sortedKeys[sortedKeys.length - 1];
+
+    const episodesInRange = grouped[selectedKey];
+    const episode = shouldSelectFirst
+      ? episodesInRange[0]
+      : episodesInRange[episodesInRange.length - 1];
+
+    setSelectedRangeKey(selectedKey);
+    setSelectedEpisode(episode.globalIndex);
+  }
+}, [episodes, grouped, sortedKeys, selectedRangeKey]);
 
   return (
     <div>
