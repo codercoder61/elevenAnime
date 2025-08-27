@@ -7,12 +7,6 @@ direction:rtl;
 
 
 
-.fop{
-width :100%;
-height : auto; 
-max-height :80vh; 
-display :block;
-}
 #links{
     margin:0px 25px;
     background-color: hsl(265, 54%, 35%);
@@ -506,14 +500,24 @@ justify-content:center;
 
 #maga{
 position:absolute;right:10px;width:180px;}
-@media only screen and (max-width: 775px) {
-.fop{
-  max-height: unset;
-  max-width: unset;
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain; /* or cover/fill */
+
+.plyr__video-wrapper video.fop {
+  /* stronger selector, if necessary */
+  width: 100% !important;
+  height: auto !important;
+  max-height: 80vh !important;
 }
+
+
+
+
+@media only screen and (max-width: 775px) {
+.plyr__video-wrapper video.fop {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: unset !important;
+    object-fit: contain !important;
+  }
 #maga{
 display:none;}
 #gl img{
