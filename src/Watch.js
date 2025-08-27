@@ -176,6 +176,34 @@ function getEpisodeFromURL() {
   return isNaN(epNum) ? null : epNum;
 }
 
+  
+
+  // Group episodes by real 100-blocks (but only include real ones)
+  const grouped = {};
+
+  episodes.forEach((ep,index) => {
+    const rangeStart = Math.floor((index) / 100) * 100 + 1;
+    const rangeEnd = Math.max(rangeStart + 99, index+1); // dynamic last block (e.g. 201–220)
+    const realEnd = Math.max(...episodes.map((e,index) => index+1)); // max episode number
+    const correctedEnd = Math.min(rangeEnd, realEnd); // cap it
+
+    const key = `${rangeStart}–${correctedEnd}`;
+
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+
+    grouped[key].push({ episode: ep, globalIndex: index });
+
+  });
+
+  // Sort ranges numerically by rangeStart
+  const sortedKeys = Object.keys(grouped).sort((a, b) => {
+    const startA = parseInt(a.split('–')[0], 10);
+    const startB = parseInt(b.split('–')[0], 10);
+    return startA - startB;
+  });
+
   useEffect(() => {
   const urlEpisode = getEpisodeFromURL(); // e.g., 12
 
@@ -210,32 +238,6 @@ function getEpisodeFromURL() {
     setSelectedEpisode(episode.globalIndex);
   }
 }, [episodes, grouped, sortedKeys, selectedRangeKey]);
-
-  // Group episodes by real 100-blocks (but only include real ones)
-  const grouped = {};
-
-  episodes.forEach((ep,index) => {
-    const rangeStart = Math.floor((index) / 100) * 100 + 1;
-    const rangeEnd = Math.max(rangeStart + 99, index+1); // dynamic last block (e.g. 201–220)
-    const realEnd = Math.max(...episodes.map((e,index) => index+1)); // max episode number
-    const correctedEnd = Math.min(rangeEnd, realEnd); // cap it
-
-    const key = `${rangeStart}–${correctedEnd}`;
-
-    if (!grouped[key]) {
-      grouped[key] = [];
-    }
-
-    grouped[key].push({ episode: ep, globalIndex: index });
-
-  });
-
-  // Sort ranges numerically by rangeStart
-  const sortedKeys = Object.keys(grouped).sort((a, b) => {
-    const startA = parseInt(a.split('–')[0], 10);
-    const startB = parseInt(b.split('–')[0], 10);
-    return startA - startB;
-  });
 useEffect(() => {
     if (!selectedRangeKey && sortedKeys.length > 0) {
       const shouldSelectFirst =
