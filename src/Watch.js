@@ -71,7 +71,7 @@ useEffect(() => {
   }
 
   try {
-    const { data } = await axios.get('http://13.53.168.5:3000/search', {
+    const { data } = await axios.get('https://api.soc-net.info:3000/search', {
       params: { q: search },
     });
     console.log(data)
@@ -104,7 +104,7 @@ console.log("animeId:", animeId);  // Log the animeId value
 
 useEffect(() => {
   axios
-    .get('http://13.53.168.5:3000/getAnimeInfo', {
+    .get('https://api.soc-net.info:3000/getAnimeInfo', {
       params: { animeId }
     })
     .then(response => {
@@ -124,7 +124,7 @@ useEffect(() => {
 
 const changeSource = (episodeHref) => {
 axios
-      .get('http://13.53.168.5:3000/getEpisodeSource', {
+      .get('https://api.soc-net.info:3000/getEpisodeSource', {
         params: { episodeHref }
       })
       .then(response => {
@@ -289,7 +289,7 @@ videoElement.style.display = 'block';
 
 useEffect(()=>{
   axios
-  .get('http://13.53.168.5:3000/getAnimeEpisodesInfo', {
+  .get('https://api.soc-net.info:3000/getAnimeEpisodesInfo', {
     params: { episodeHref }
   })
   .then(response => {
