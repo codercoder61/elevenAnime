@@ -19,6 +19,28 @@ direction:rtl;
 .plyr__video-wrapper{
 	display:flex;
 }
+
+.spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 0, 0, 0.3);
+      border-top: 4px solid red;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
 .arabic-info {
   direction: rtl;              /* Right-to-left text direction */
   text-align: right;           /* Align text to the right */
