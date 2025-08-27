@@ -10,28 +10,42 @@ function Watch() {
 localStorage.clear();
 const secretKey = 'oupsligaliga';
   const [searchParams] = useSearchParams();
-const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHref'));
+
+  const [episodeHrefEncrypted, setEpisodeHrefEncrypted] = useState(() => searchParams.get('episodeHref'));
+  const [episodeHrefDecrypted, setEpisodeHrefDecrypted] = useState(null);
+  const [episodeHref, setEpisodeHref] = useState("");
+  
+  useEffect(() => {
+    const currentEncrypted = searchParams.get('episodeHref');
+    if (currentEncrypted && currentEncrypted !== episodeHrefEncrypted) {
+      setEpisodeHrefEncrypted(currentEncrypted);
+    }
+  }, [searchParams, episodeHrefEncrypted]);
+
+  useEffect(() => {
+    if (episodeHrefEncrypted) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(decodeURIComponent(episodeHrefEncrypted), secretKey);
+        const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        console.log('Decrypted:', decrypted);
+        setEpisodeHrefDecrypted(decrypted);
+        setEpisodeHref(decrypted)
+      } catch (err) {
+        console.error('Decryption failed:', err);
+        setEpisodeHrefDecrypted(null);
+      }
+    }
+  }, [episodeHrefEncrypted]);
 
 
 
   
-  useEffect(() => {
-    const currentHref = searchParams.get('episodeHref');
-        if (episodeHref) {
-      try {
-        const bytes = CryptoJS.AES.decrypt(decodeURIComponent(episodeHref), secretKey);
-        const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        console.log(decrypted); // Use your data
-        setEpisodeHref(decrypted)
-      } catch (err) {
-        console.error('Decryption failed:', err);
-      }
-    }
-    if (currentHref !== episodeHref) {
-      setEpisodeHref(currentHref);
-    }
-  }, [searchParams, episodeHref]);
 
+
+
+
+  
+ 
 
   const navigate = useNavigate();
   const videoRef = useRef(null);
