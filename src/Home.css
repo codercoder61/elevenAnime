@@ -497,8 +497,8 @@ justify-content:center;
 .fop:fullscreen,
 .fop:-webkit-full-screen,
 .fop:-moz-full-screen {
-  max-height: unset !important;
-  max-width: unset !important;
+  max-height: unset;
+  max-width: unset;
   width: 100vw;
   height: 100vh;
   object-fit: contain; /* or cover/fill */
@@ -507,7 +507,13 @@ justify-content:center;
 #maga{
 position:absolute;right:10px;width:180px;}
 @media only screen and (max-width: 375px) {
-
+.fop{
+  max-height: unset;
+  max-width: unset;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain; /* or cover/fill */
+}
 #maga{
 display:none;}
 #gl img{
