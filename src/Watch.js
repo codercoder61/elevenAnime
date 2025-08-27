@@ -282,7 +282,6 @@ videoElement.style.display = 'block';
 
 if (window.innerWidth <= 775) {
   videoElement.style.width = '100vw';
-  videoElement.style.height = '100vh';
   videoElement.style.maxWidth = 'unset';
   videoElement.style.maxHeight = 'unset';
   videoElement.style.objectFit = 'contain';
