@@ -4,6 +4,15 @@ body{
 .desc{
 direction:rtl;
 }
+
+
+
+.fop{
+width :100%;
+height : auto; 
+max-height :80vh; 
+display :block;
+}
 #links{
     margin:0px 25px;
     background-color: hsl(265, 54%, 35%);
@@ -485,9 +494,9 @@ justify-content:center;
 }
 
 
-#player-container > div > div.plyr__video-wrapper > video:fullscreen,
-#player-container > div > div.plyr__video-wrapper > video:-webkit-full-screen,
-#player-container > div > div.plyr__video-wrapper > video:-moz-full-screen {
+.fop:fullscreen,
+.fop:-webkit-full-screen,
+.fop:-moz-full-screen {
   max-height: unset !important;
   max-width: unset !important;
   width: 100vw;
