@@ -461,6 +461,9 @@ justify-content:center;
 #maga{
 position:absolute;right:10px;width:180px;}
 @media only screen and (max-width: 375px) {
+video {
+  max-height: unset !important;
+}
 #maga{
 display:none;}
 #gl img{
