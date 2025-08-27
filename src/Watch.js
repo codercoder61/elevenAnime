@@ -204,7 +204,27 @@ function getEpisodeFromURL() {
     return startA - startB;
   });
 
-  useEffect(() => {
+  
+useEffect(() => {
+    if (!selectedRangeKey && sortedKeys.length > 0) {
+      const shouldSelectFirst =
+        searchParams.get("flag") || localStorage.getItem("flag")  === "true";
+
+      const selectedKey = shouldSelectFirst
+        ? sortedKeys[0] // First range
+        : sortedKeys[sortedKeys.length - 1]; // Last range
+
+      const episodesInRange = grouped[selectedKey];
+      const episode = shouldSelectFirst
+        ? episodesInRange[0] // First episode in range
+        : episodesInRange[episodesInRange.length - 1]; // Last episode in range
+
+      setSelectedRangeKey(selectedKey);
+      setSelectedEpisode(episode.globalIndex);
+    }
+  }, [sortedKeys, selectedRangeKey, searchParams]);
+
+useEffect(() => {
   const urlEpisode = getEpisodeFromURL(); // e.g., 12
 
   if (urlEpisode && episodes.length > 0 && grouped && sortedKeys.length > 0) {
@@ -238,26 +258,6 @@ function getEpisodeFromURL() {
     setSelectedEpisode(episode.globalIndex);
   }
 }, [episodes, grouped, sortedKeys, selectedRangeKey]);
-useEffect(() => {
-    if (!selectedRangeKey && sortedKeys.length > 0) {
-      const shouldSelectFirst =
-        searchParams.get("flag") || localStorage.getItem("flag")  === "true";
-
-      const selectedKey = shouldSelectFirst
-        ? sortedKeys[0] // First range
-        : sortedKeys[sortedKeys.length - 1]; // Last range
-
-      const episodesInRange = grouped[selectedKey];
-      const episode = shouldSelectFirst
-        ? episodesInRange[0] // First episode in range
-        : episodesInRange[episodesInRange.length - 1]; // Last episode in range
-
-      setSelectedRangeKey(selectedKey);
-      setSelectedEpisode(episode.globalIndex);
-    }
-  }, [sortedKeys, selectedRangeKey, searchParams]);
-
-
 
 
   return (
