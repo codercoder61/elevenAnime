@@ -4,15 +4,29 @@ import axios from 'axios'
 import { useSearchParams,Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Plyr from 'plyr';
+import CryptoJS from 'crypto-js';
+
 function Watch() {
 localStorage.clear();
-
+const secretKey = 'oupsligaliga';
   const [searchParams] = useSearchParams();
 const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHref'));
 
 
+
+  
   useEffect(() => {
     const currentHref = searchParams.get('episodeHref');
+        if (episodeHref) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(decodeURIComponent(episodeHref), secretKey);
+        const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        console.log(decrypted); // Use your data
+        setEpisodeHref(decrypted)
+      } catch (err) {
+        console.error('Decryption failed:', err);
+      }
+    }
     if (currentHref !== episodeHref) {
       setEpisodeHref(currentHref);
     }
