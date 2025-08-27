@@ -75,7 +75,7 @@ const [searchParams] = useSearchParams();
   }
 
   try {
-    const { data } = await axios.get('http://localhost:3000/search', {
+    const { data } = await axios.get('http://13.53.168.5:3000/search', {
       params: { q: search },
     });
     console.log(data)
@@ -168,7 +168,7 @@ const totalPages = Math.ceil((recUpd?.length || 0) / itemsPerPage);
     const fetchData = async (page=1) => {
       try {
          
-        const response = await axios.get(`http://localhost:3000/getLatestAnimes?page=${page}`, {
+        const response = await axios.get(`http://13.53.168.5:3000/getLatestAnimes?page=${page}`, {
       type:'tv',
     })
         console.log(response)
@@ -233,7 +233,7 @@ setCurrentPage(1)
   setRecUpd(null);
     ti.current.textContent = show ?  show +' ' + 'الحرف  '  : 'الكل ' ;
 
-  axios.get(`http://localhost:3000/search?q=${show}`)
+  axios.get(`http://13.53.168.5:3000/search?q=${show}`)
   .then(response => {
     console.log('Response:', response);
     const newData = response.data.animeList || [];
@@ -399,7 +399,7 @@ const handleMouseEnter = (animeId, index) => {
   setHoveredIndex(index);
 setLoading(true);
   axios
-  .get('http://localhost:3000/getAnimeInfo', {
+  .get('http://13.53.168.5:3000/getAnimeInfo', {
     params: { animeId }
   })
   .then(response => {
