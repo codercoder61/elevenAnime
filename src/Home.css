@@ -458,17 +458,22 @@ width: 65%;
     display:flex;
 justify-content:center;
 }
-video:fullscreen {
-  max-height: unset !important;
-}
 
+
+#player-container > div > div.plyr__video-wrapper > video:fullscreen,
+#player-container > div > div.plyr__video-wrapper > video:-webkit-full-screen,
+#player-container > div > div.plyr__video-wrapper > video:-moz-full-screen {
+  max-height: unset !important;
+  max-width: unset !important;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain; /* or cover/fill */
+}
 
 #maga{
 position:absolute;right:10px;width:180px;}
 @media only screen and (max-width: 375px) {
-video:fullscreen {
-  max-height: unset !important;
-}
+
 #maga{
 display:none;}
 #gl img{
