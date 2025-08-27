@@ -26,6 +26,8 @@ const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHr
  
 const [videoSrc, setVideoSrc] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   
 
 
@@ -123,6 +125,7 @@ useEffect(() => {
 
 
 const changeSource = (episodeHref) => {
+  setLoading(true)
 axios
       .get('https://api.soc-net.info/getEpisodeSource', {
         params: { episodeHref }
@@ -130,6 +133,7 @@ axios
       .then(response => {
         console.log('Response:', response);
 setVideoSrc(response.data.episodeSrc); // Let React handle the update
+        setLoading(false)
       })
       .catch(error => {
         console.error('Error:', error);
@@ -305,6 +309,7 @@ useEffect(()=>{
 
   return (
     <div>
+    {loading && <div class="spinner"></div>}
       {allState && <div ref={all} className='all'></div>}
       {isSignIn && <div className='register'>
         <i onClick={()=>{setAllState(false);setIsSignIn(false)}} style={{cursor:'pointer',position:'absolute',right:'10px',top:'10px'}} className="fa-solid fa-xmark"></i>
