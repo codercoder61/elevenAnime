@@ -458,10 +458,15 @@ width: 65%;
     display:flex;
 justify-content:center;
 }
+video:fullscreen {
+  max-height: unset !important;
+}
+
+
 #maga{
 position:absolute;right:10px;width:180px;}
 @media only screen and (max-width: 375px) {
-video {
+video:fullscreen {
   max-height: unset !important;
 }
 #maga{
