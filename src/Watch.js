@@ -11,31 +11,16 @@ localStorage.clear();
 const secretKey = 'oupsligaliga';
   const [searchParams] = useSearchParams();
 
-  const [episodeHrefEncrypted, setEpisodeHrefEncrypted] = useState(() => searchParams.get('episodeHref'));
-  const [episodeHrefDecrypted, setEpisodeHrefDecrypted] = useState(null);
-  const [episodeHref, setEpisodeHref] = useState("");
+  const [episodeHref, setEpisodeHref] = useState(() => searchParams.get('episodeHref'));
   
   useEffect(() => {
-    const currentEncrypted = searchParams.get('episodeHref');
-    if (currentEncrypted && currentEncrypted !== episodeHrefEncrypted) {
-      setEpisodeHrefEncrypted(currentEncrypted);
+    const currentepisodeHref = searchParams.get('episodeHref');
+    if (currentepisodeHref && currentepisodeHref !== episodeHref) {
+       setEpisodeHref(episodeHref);
     }
-  }, [searchParams, episodeHrefEncrypted]);
+  }, [episodeHref]);
 
-  useEffect(() => {
-    if (episodeHrefEncrypted) {
-      try {
-        const bytes = CryptoJS.AES.decrypt(decodeURIComponent(episodeHrefEncrypted), secretKey);
-        const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        console.log('Decrypted:', decrypted);
-        setEpisodeHrefDecrypted(decrypted);
-        setEpisodeHref(decrypted)
-      } catch (err) {
-        console.error('Decryption failed:', err);
-        setEpisodeHrefDecrypted(null);
-      }
-    }
-  }, [episodeHrefEncrypted]);
+
 
 
 
