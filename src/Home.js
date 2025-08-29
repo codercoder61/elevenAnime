@@ -435,7 +435,7 @@ setLoading(true);
       {allState && <div ref={all} className='all'></div>}
       {isSignIn && <div className='register'>
         <i onClick={()=>{setAllState(false);setIsSignIn(false)}} style={{cursor:'pointer',position:'absolute',right:'10px',top:'10px'}} className="fa-solid fa-xmark"></i>
-        <div><img crossorigin="anonymous" style={{position:'relative',right:'20px',width:'250px'}} src='https://9animetv.to/images/icon-login2.png'/></div>
+        <div><img crossorigin="anonymous" style={{position:'relative',right:'20px',width:'250px'}} src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-login2.png')}`}/></div>
         <div style={{height:'auto',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
           <h1 style={{color:'#5a2e98',textAlign:'center'}}>Member Login</h1>
           <p style={{textAlign:'center'}}>11anime - a better place to watch anime online for free!</p>
@@ -457,7 +457,8 @@ setLoading(true);
       </div>}
       {isSignUp && <div className='register'>
         <i onClick={()=>{setAllState(false);setIsSignUp(false)}} style={{cursor:'pointer',position:'absolute',right:'10px',top:'10px'}} className="fa-solid fa-xmark"></i>
-        <div><img crossorigin="anonymous" style={{position:'relative',right:'20px',width:'250px'}} src='https://9animetv.to/images/icon-register.png'/></div>
+        <div><img crossorigin="anonymous" style={{position:'relative',right:'20px',width:'250px'}}
+src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-register.png')}`}/></div>
         <div style={{height:'auto',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
           <h1 style={{color:'#5a2e98',textAlign:'center'}}>Register</h1>
           <p style={{textAlign:'center'}}>When becoming members of the site, you could use the full range of functions.</p>
@@ -510,7 +511,7 @@ setLoading(true);
               height: '50px',
               borderRadius: '50%',
             }}
-            src={elm.poster}
+			src={`https://soc-net.info/proxy.php?url=${encodeURIComponent(elm.poster)}`}
             alt={elm.title}
           />
         </div>
@@ -539,7 +540,8 @@ setLoading(true);
         <div className='fadeToBlack'></div>
         <Link to='/watch?flag=true&animeId=hunter-x-hunter-2011&episodeHref=https://anime3rb.com/episode/hunter-x-hunter-2011/1'><div  className="mySlides">
                 <div className="numbertext">1 / 5</div>
-                <img crossorigin="anonymous" className="fade" src="https://worldofgeek.fr/wp-content/uploads/2025/07/hunter-x-hunter-nen-impact-1200x571.jpg" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img crossorigin="anonymous" className="fade" s
+src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://worldofgeek.fr/wp-content/uploads/2025/07/hunter-x-hunter-nen-impact-1200x571.jpg')}`} style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">Hunter x Hunter (2011)</div>
@@ -550,7 +552,8 @@ setLoading(true);
             </div></Link>
         <Link to='/watch?flag=true&animeId=one-piece&episodeHref=https://anime3rb.com/episode/one-piece/1'><div  className="mySlides">
                 <div className="numbertext">2 / 5</div>
-                <img crossorigin="anonymous" className="fade" src="https://cdna.artstation.com/p/assets/images/images/052/674/042/large/elix-asset.jpg?1660391448" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img crossorigin="anonymous" className="fade" 
+	src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://cdna.artstation.com/p/assets/images/images/052/674/042/large/elix-asset.jpg?1660391448')}`} style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">One Piece</div>
@@ -561,7 +564,7 @@ setLoading(true);
         </div></Link>
         <Link to='/watch?flag=true&animeId=shingeki-no-kyojin&episodeHref=https://anime3rb.com/episode/shingeki-no-kyojin/1'><div  className="mySlides">
                 <div className="numbertext">3 / 5</div>
-                <img crossorigin="anonymous" className="fade" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9f2fcbc8-1efd-4a10-aa26-f4d8fbf53f35/d6n4i7m-6744e406-bb25-4556-b1c4-f5e7e2ee8a41.jpg/v1/fill/w_851,h_315,q_75,strp/shingeki_no_kyojin_facebook_banner_by_jondedy_d6n4i7m-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MzE1IiwicGF0aCI6IlwvZlwvOWYyZmNiYzgtMWVmZC00YTEwLWFhMjYtZjRkOGZiZjUzZjM1XC9kNm40aTdtLTY3NDRlNDA2LWJiMjUtNDU1Ni1iMWM0LWY1ZTdlMmVlOGE0MS5qcGciLCJ3aWR0aCI6Ijw9ODUxIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.jVDBOkhV_bxO2PVV0GnyP7sdvZdp_tYjpEsa1wZWcS8" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img crossorigin="anonymous" className="fade" src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9f2fcbc8-1efd-4a10-aa26-f4d8fbf53f35/d6n4i7m-6744e406-bb25-4556-b1c4-f5e7e2ee8a41.jpg/v1/fill/w_851,h_315,q_75,strp/shingeki_no_kyojin_facebook_banner_by_jondedy_d6n4i7m-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MzE1IiwicGF0aCI6IlwvZlwvOWYyZmNiYzgtMWVmZC00YTEwLWFhMjYtZjRkOGZiZjUzZjM1XC9kNm40aTdtLTY3NDRlNDA2LWJiMjUtNDU1Ni1iMWM0LWY1ZTdlMmVlOGE0MS5qcGciLCJ3aWR0aCI6Ijw9ODUxIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.jVDBOkhV_bxO2PVV0GnyP7sdvZdp_tYjpEsa1wZWcS8')}`}  style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
 
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
@@ -573,7 +576,7 @@ setLoading(true);
         </div></Link>
         <Link to='/watch?flag=true&animeId=one-punch-man&episodeHref=https://anime3rb.com/episode/one-punch-man/1'><div  className="mySlides">
                 <div className="numbertext">4 / 5</div>
-                <img crossorigin="anonymous" className="fade" src="https://www.journaldujapon.com/wp-content/uploads/2016/09/25220.jpg" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://www.journaldujapon.com/wp-content/uploads/2016/09/25220.jpg')}`} crossorigin="anonymous" className="fade" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">One Punch Man</div>
@@ -588,7 +591,7 @@ setLoading(true);
 
         <Link to="/watch?flag=true&animeId=naruto&episodeHref=https://anime3rb.com/episode/naruto/1"><div  className="mySlides">
                 <div className="numbertext">5 / 5</div>
-                <img crossorigin="anonymous" className="fade" src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2025/02/naruto-header.jpg?q=70&fit=crop&w=1100&h=618&dpr=1" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://static1.colliderimages.com/wordpress/wp-content/uploads/2025/02/naruto-header.jpg?q=70&fit=crop&w=1100&h=618&dpr=1')}`} crossorigin="anonymous" className="fade" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">Naruto (2002)</div>
@@ -652,7 +655,7 @@ const episodeHref = flag
 
           >
             <img crossorigin="anonymous"
-              src={elm.poster}
+src={`https://soc-net.info/proxy.php?url=${encodeURIComponent(elm.poster)}`}
               alt=""
               className="hover-image"
               style={{
@@ -818,7 +821,7 @@ const episodeHref = flag
     
     </div>
       <div style={{position:'relative',padding:'10px',backgroundColor:'#222',width:'100%',height:'fit-content',paddingBottom:'30px'}}>
-        <img crossorigin="anonymous" id='foo' src='https://9animetv.to/images/footer-icon.png'/>
+        <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/footer-icon.png')}`} crossorigin="anonymous" id='foo'/>
           <p style={{textAlign:'center',direction:'rtl',color:'gray',marginLeft:'15px'}}>قائمة A-Z | البحث عن الأنمي حسب اسم الأبجدية من A إلى Z.</p>
           <div className='alphabet'>
             <span onClick={() => handleClick('')}>#</span>
