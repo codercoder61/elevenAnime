@@ -576,7 +576,7 @@ src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://worldofge
         </div></Link>
         <Link to='/watch?flag=true&animeId=one-punch-man&episodeHref=https://anime3rb.com/episode/one-punch-man/1'><div  className="mySlides">
                 <div className="numbertext">4 / 5</div>
-                <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://www.journaldujapon.com/wp-content/uploads/2016/09/25220.jpg')}`} crossorigin="anonymous" className="fade" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
+                <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://static0.anpoimages.com/wordpress/wp-content/uploads/2022/09/one-punch-man-the-strongest-hero-image-edited.jpg?q=50&fit=crop&w=1079&h=544&dpr=1.5')}`} crossorigin="anonymous" className="fade" style={{width:'100%',minHeight:'300px',height:'200px',objectFit:'cover'}} />
                 <div style={{boxShadow:'0 0 5px white',zIndex:'50000',position:'relative',width:'auto',display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'#5a2e98'}}>
                   <div>
                 <div className="text noFade">One Punch Man</div>
