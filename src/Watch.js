@@ -143,67 +143,53 @@ function Watch() {
 
   /* ===================== EPISODE BROWSER ===================== */
   const EpisodeBrowser = ({ episodes }) => {
-    const [selectedEpisode, setSelectedEpisode] = useState(null);
+  const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [selectedRangeKey, setSelectedRangeKey] = useState(null);
-   const grouped = useMemo(() => {
-  const g = {};
-  episodes.forEach((ep, index) => {
-    const start = Math.floor(index / 100) * 100 + 1;
-    const end = Math.min(start + 99, episodes.length);
-    const key = `${start}–${end}`;
-    g[key] ??= [];
-    g[key].push({ ep, index });
-  });
-  return g;
-}, [episodes]);
 
-const keys = useMemo(() => Object.keys(grouped), [grouped]);
+  const grouped = useMemo(() => {
+    const g = {};
+    episodes.forEach((ep, index) => {
+      const start = Math.floor(index / 100) * 100 + 1;
+      const end = Math.min(start + 99, episodes.length);
+      const key = `${start}–${end}`;
+      g[key] ??= [];
+      g[key].push({ ep, index });
+    });
+    return g;
+  }, [episodes]);
 
+  const keys = useMemo(() => Object.keys(grouped), [grouped]);
 
-    useEffect(() => {
-  if (!selectedRangeKey && keys.length) {
-    const lastKey = keys[keys.length - 1];
-    setSelectedRangeKey(lastKey);
-    setSelectedEpisode(grouped[lastKey][0].index);
-  }
-}, [keys, grouped, selectedRangeKey]);
+  useEffect(() => {
+    if (!selectedRangeKey && keys.length) {
+      const lastKey = keys[keys.length - 1];
+      setSelectedRangeKey(lastKey);
+      setSelectedEpisode(grouped[lastKey][0].index);
+    }
+  }, [keys, grouped, selectedRangeKey]);
 
+  return (
+    <div id="epo">
+      {keys.map((k) => (
+        <span
+          key={k}
+          onClick={() => setSelectedRangeKey(k)}
+          style={{
+            margin: 6,
+            padding: '6px 10px',
+            cursor: 'pointer',
+            background: selectedRangeKey === k ? '#5a2e98' : '#eee',
+            color: selectedRangeKey === k ? '#fff' : '#000',
+            borderRadius: 4,
+          }}
+        >
+          {k}
+        </span>
+      ))}
 
-    return (
-      <div id="epo">
-        {keys.map((k) => (
-          <span
-            key={k}
-            onClick={() => setSelectedRangeKey(k)}
-            style={{
-              margin: 6,
-              padding: '6px 10px',
-              cursor: 'pointer',
-              background: selectedRangeKey === k ? '#5a2e98' : '#eee',
-              color: selectedRangeKey === k ? '#fff' : '#000',
-              borderRadius: 4,
-            }}
-          >
-            {k}
-          </span>
-        ))}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+        {grouped[selectedRangeKey]?.map(({ ep, inde
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {grouped[selectedRangeKey]?.map(({ ep, index }) => (
-            <button
-              key={index}
-              onClick={() => {
-                setEpisodeHref(ep.episodeHref);
-                setSelectedEpisode(index);
-              }}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   /* ===================== JSX ===================== */
   return (
