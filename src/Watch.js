@@ -142,10 +142,12 @@ function Watch() {
   const handleLetter = (l) => navigate(`/?letter=${l}`);
 
   /* ===================== EPISODE BROWSER ===================== */
-  const EpisodeBrowser = ({ episodes }) => {
+  /* ===================== EPISODE BROWSER ===================== */
+const EpisodeBrowser = ({ episodes }) => {
   const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [selectedRangeKey, setSelectedRangeKey] = useState(null);
 
+  // Group episodes in batches of 100
   const grouped = useMemo(() => {
     const g = {};
     episodes.forEach((ep, index) => {
@@ -160,6 +162,7 @@ function Watch() {
 
   const keys = useMemo(() => Object.keys(grouped), [grouped]);
 
+  // Initialize to last batch and first episode of that batch
   useEffect(() => {
     if (!selectedRangeKey && keys.length) {
       const lastKey = keys[keys.length - 1];
@@ -170,6 +173,7 @@ function Watch() {
 
   return (
     <div id="epo">
+      {/* Range selector */}
       {keys.map((k) => (
         <span
           key={k}
@@ -187,6 +191,7 @@ function Watch() {
         </span>
       ))}
 
+      {/* Episode buttons */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
         {grouped[selectedRangeKey]?.map(({ ep, index }) => (
           <button
@@ -194,6 +199,13 @@ function Watch() {
             onClick={() => {
               setEpisodeHref(ep.episodeHref);
               setSelectedEpisode(index);
+            }}
+            style={{
+              background: selectedEpisode === index ? '#5a2e98' : '#eee',
+              color: selectedEpisode === index ? '#fff' : '#000',
+              padding: '4px 8px',
+              borderRadius: 4,
+              cursor: 'pointer',
             }}
           >
             {index + 1}
@@ -203,6 +215,7 @@ function Watch() {
     </div>
   );
 };
+
 
 
   /* ===================== JSX ===================== */
