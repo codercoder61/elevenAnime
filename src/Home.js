@@ -5,7 +5,6 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 function Home() {
   const navigate = useNavigate();
-  const slideshow = useRef(null);
   const ress = useRef(null);
   const ti = useRef(null);
   const refs = useRef([]);
@@ -50,16 +49,23 @@ function Home() {
 
   const showSlides = useCallback((n) => {
   const slides = document.getElementsByClassName('mySlides');
-    if (!slides.length) return;
-    if (n > slides.length) slideIndex = 1;
-    if (n < 1) slideIndex = slides.length;
-    Array.from(slides).forEach((s) => (s.style.display = 'none'));
-    slides[slideIndex - 1].style.display = 'block';
+  if (!slides.length) return;
+
+  if (n > slides.length) slideIndexRef.current = 1;
+  if (n < 1) slideIndexRef.current = slides.length;
+
+  Array.from(slides).forEach(
+    (s) => (s.style.display = 'none')
+  );
+
+  slides[slideIndexRef.current - 1].style.display = 'block';
 }, []);
 
+
   useEffect(() => {
-  showSlides(slideIndex);
-}, [slideIndex, showSlides]);
+  showSlides(slideIndexRef.current);
+}, [showSlides]);
+
 
   /* ===================== DATA ===================== */
   const [recUpd, setRecUpd] = useState([]);
