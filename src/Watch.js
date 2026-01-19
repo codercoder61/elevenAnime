@@ -87,7 +87,7 @@ useEffect(() => {
   }
 
   try {
-    const { data } = await axios.get('https://api.soc-net.info/search', {
+    const { data } = await axios.get('https://televisions-replacement-gsm-promising.trycloudflare.com/search', {
       params: { q: search },
     });
     console.log(data)
@@ -120,7 +120,7 @@ console.log("animeId:", animeId);  // Log the animeId value
 
 useEffect(() => {
   axios
-    .get('https://api.soc-net.info/getAnimeInfo', {
+    .get('https://televisions-replacement-gsm-promising.trycloudflare.com/getAnimeInfo', {
       params: { animeId }
     })
     .then(response => {
@@ -141,7 +141,7 @@ useEffect(() => {
 const changeSource = (episodeHref) => {
   setLoading(true)
 axios
-      .get('https://api.soc-net.info/getEpisodeSource', {
+      .get('https://televisions-replacement-gsm-promising.trycloudflare.com/getEpisodeSource', {
         params: { episodeHref }
       })
       .then(response => {
@@ -358,7 +358,7 @@ if (window.innerWidth <= 775) {
 
 useEffect(()=>{
   axios
-  .get('https://api.soc-net.info/getAnimeEpisodesInfo', {
+  .get('https://televisions-replacement-gsm-promising.trycloudflare.com/getAnimeEpisodesInfo', {
     params: { episodeHref }
   })
   .then(response => {
@@ -379,7 +379,7 @@ useEffect(()=>{
       {allState && <div ref={all} className='all'></div>}
       {isSignIn && <div className='register'>
         <i onClick={()=>{setAllState(false);setIsSignIn(false)}} style={{cursor:'pointer',position:'absolute',right:'10px',top:'10px'}} className="fa-solid fa-xmark"></i>
-        <div><img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-login2.png')}`} style={{position:'relative',right:'20px',width:'250px'}} /></div>
+        <div><img src={`https://available-flight-kings-largest.trycloudflare.com/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-login2.png')}`} style={{position:'relative',right:'20px',width:'250px'}} /></div>
         <div style={{height:'auto',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
           <h1 style={{color:'#5a2e98',textAlign:'center'}}>Member Login</h1>
           <p style={{textAlign:'center'}}>11anime - a better place to watch anime online for free!</p>
@@ -401,7 +401,7 @@ useEffect(()=>{
       </div>}
       {isSignUp && <div className='register'>
         <i onClick={()=>{setAllState(false);setIsSignUp(false)}} style={{cursor:'pointer',position:'absolute',right:'10px',top:'10px'}} className="fa-solid fa-xmark"></i>
-        <div><img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-register.png')}`} style={{position:'relative',right:'20px',width:'250px'}} /></div>
+        <div><img src={`https://available-flight-kings-largest.trycloudflare.com/proxy.php?url=${encodeURIComponent('https://9animetv.to/images/icon-register.png')}`} style={{position:'relative',right:'20px',width:'250px'}} /></div>
         <div style={{height:'auto',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
           <h1 style={{color:'#5a2e98',textAlign:'center'}}>Register</h1>
           <p style={{textAlign:'center'}}>When becoming members of the site, you could use the full range of functions.</p>
@@ -441,7 +441,7 @@ useEffect(()=>{
                       <div ref={ress} id='ress'>
                         {results && results.map((elm,index)=>(
                           <Link to={`/watch?flag=true&animeId=${elm.animeId}&episodeHref=https://anime3rb.com/episode/${elm.animeId}/1`}><div key={index} style={{margin:'10px 0',display:'flex',alignItems:'center'}}>
-                            <div><img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent(elm.poster)}`} style={{objectFit:'cover',width:'50px',height:'50px',borderRadius:'50%'}} /></div>
+                            <div><img src={`https://available-flight-kings-largest.trycloudflare.com/proxy.php?url=${encodeURIComponent(elm.poster)}`} style={{objectFit:'cover',width:'50px',height:'50px',borderRadius:'50%'}} /></div>
                             <div style={{marginLeft:'10px'}}>
                               <p>{elm.title}</p>
                             </div>
@@ -562,7 +562,7 @@ useEffect(()=>{
 <div>
 <img
   style={{ width: '180px', marginRight: '20px' }}
-  src={`https://soc-net.info/proxy.php?url=${animeData && encodeURIComponent(animeData.poster)}`}
+  src={`https://available-flight-kings-largest.trycloudflare.com/proxy.php?url=${animeData && encodeURIComponent(animeData.poster)}`}
 />
 
 </div>
@@ -593,7 +593,7 @@ useEffect(()=>{
 </div>
         </div>
       <div style={{position:'relative',padding:'10px',backgroundColor:'#222',width:'100%',height:'fit-content',paddingBottom:'30px'}}>
-        <img src={`https://soc-net.info/proxy.php?url=${encodeURIComponent("https://9animetv.to/images/footer-icon.png")}`} id='foo'/>
+        <img src={`https://available-flight-kings-largest.trycloudflare.com/proxy.php?url=${encodeURIComponent("https://9animetv.to/images/footer-icon.png")}`} id='foo'/>
           <p style={{textAlign:'center',direction:'rtl',color:'gray',marginLeft:'15px'}}>قائمة A-Z | البحث عن الأنمي حسب اسم الأبجدية من A إلى Z.</p>
           <div className='alphabet'>
             <span onClick={() => handleClick('')}>#</span>
