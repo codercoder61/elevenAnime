@@ -28,7 +28,6 @@ function Watch() {
   const [status, setStatus] = useState('');
   const [type, setType] = useState('');
 
-  const [selectedEpisode, setSelectedEpisode] = useState(null);
   const [selectedRangeKey, setSelectedRangeKey] = useState(null);
 
   /* ===================== REFS ===================== */
@@ -162,7 +161,7 @@ function Watch() {
         setSelectedRangeKey(keys[keys.length - 1]);
         setSelectedEpisode(grouped[keys[keys.length - 1]][0].index);
       }
-    }, [keys]);
+    }, [keys,grouped]);
 
     return (
       <div id="epo">
