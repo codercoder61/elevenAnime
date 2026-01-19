@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './Home.css';
 import axios from 'axios';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
@@ -144,6 +144,8 @@ function Watch() {
 
   /* ===================== EPISODE BROWSER ===================== */
   const EpisodeBrowser = ({ episodes }) => {
+    const [selectedEpisode, setSelectedEpisode] = useState(null);
+  const [selectedRangeKey, setSelectedRangeKey] = useState(null);
    const grouped = useMemo(() => {
   const g = {};
   episodes.forEach((ep, index) => {
