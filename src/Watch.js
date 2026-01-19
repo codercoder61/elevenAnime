@@ -144,24 +144,29 @@ function Watch() {
 
   /* ===================== EPISODE BROWSER ===================== */
   const EpisodeBrowser = ({ episodes }) => {
-    const grouped = {};
+   const grouped = useMemo(() => {
+  const g = {};
+  episodes.forEach((ep, index) => {
+    const start = Math.floor(index / 100) * 100 + 1;
+    const end = Math.min(start + 99, episodes.length);
+    const key = `${start}–${end}`;
+    g[key] ??= [];
+    g[key].push({ ep, index });
+  });
+  return g;
+}, [episodes]);
 
-    episodes.forEach((ep, index) => {
-      const start = Math.floor(index / 100) * 100 + 1;
-      const end = Math.min(start + 99, episodes.length);
-      const key = `${start}–${end}`;
-      grouped[key] ??= [];
-      grouped[key].push({ ep, index });
-    });
+const keys = useMemo(() => Object.keys(grouped), [grouped]);
 
-    const keys = Object.keys(grouped);
 
     useEffect(() => {
-      if (!selectedRangeKey && keys.length) {
-        setSelectedRangeKey(keys[keys.length - 1]);
-        setSelectedEpisode(grouped[keys[keys.length - 1]][0].index);
-      }
-    }, [keys,grouped]);
+  if (!selectedRangeKey && keys.length) {
+    const lastKey = keys[keys.length - 1];
+    setSelectedRangeKey(lastKey);
+    setSelectedEpisode(grouped[lastKey][0].index);
+  }
+}, [keys, grouped, selectedRangeKey]);
+
 
     return (
       <div id="epo">
