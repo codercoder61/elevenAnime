@@ -28,7 +28,6 @@ function Watch() {
   const [status, setStatus] = useState('');
   const [type, setType] = useState('');
 
-  const [selectedRangeKey, setSelectedRangeKey] = useState(null);
 
   /* ===================== REFS ===================== */
   const playerContainerRef = useRef(null);
