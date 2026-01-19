@@ -46,18 +46,20 @@ function Home() {
   /* ===================== SLIDESHOW ===================== */
   let slideIndex = 1;
 
-  const showSlides = (n) => {
-    const slides = document.getElementsByClassName('mySlides');
+  
+
+  const showSlides = useCallback((n) => {
+  const slides = document.getElementsByClassName('mySlides');
     if (!slides.length) return;
     if (n > slides.length) slideIndex = 1;
     if (n < 1) slideIndex = slides.length;
     Array.from(slides).forEach((s) => (s.style.display = 'none'));
     slides[slideIndex - 1].style.display = 'block';
-  };
+}, []);
 
   useEffect(() => {
-    if (slideshow.current) showSlides(slideIndex);
-  }, []);
+  showSlides(slideIndex);
+}, [slideIndex, showSlides]);
 
   /* ===================== DATA ===================== */
   const [recUpd, setRecUpd] = useState([]);
@@ -69,7 +71,6 @@ function Home() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = recUpd.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(recUpd.length / itemsPerPage);
 
   const [searchParams] = useSearchParams();
   const letter = searchParams.get('letter');
@@ -92,26 +93,9 @@ function Home() {
   }, [letter]);
 
   /* ===================== FILTER ===================== */
-  const [genree, setGenree] = useState('');
-  const [typee, setTypee] = useState('');
-  const [statuse, setStatuse] = useState('');
+  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading2(true);
-    setCurrentPage(1);
-
-    try {
-      const res = await axios.get(
-        'https://televisions-replacement-gsm-promising.trycloudflare.com/filter',
-        { params: { genree, typee, statuse, page: 1 } }
-      );
-      ti.current.textContent = 'Filtered Anime';
-      setRecUpd(res.data?.animeList || []);
-    } finally {
-      setLoading2(false);
-    }
-  };
+ 
 
   /* ===================== LETTER FILTER ===================== */
   const handleLetter = async (l) => {
@@ -139,12 +123,7 @@ function Home() {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [animeState, setAnimeState] = useState('');
-  const [isdar, setIsdar] = useState('');
-  const [studio, setStudio] = useState('');
-  const [director, setDirector] = useState([]);
-  const [editor, setEditor] = useState('');
-  const [rating, setRating] = useState('');
-  const [classAge, setClassAge] = useState('');
+  
   const [genres, setGenres] = useState([]);
 
   const handleMouseEnter = async (animeId, index) => {
@@ -162,12 +141,7 @@ function Home() {
       setTitle(a.title);
       setDesc(a.desc);
       setAnimeState(a.state);
-      setIsdar(a.isdar);
-      setStudio(a.studio);
-      setDirector(Array.isArray(a.director) ? a.director : []);
-      setEditor(a.editor);
-      setRating(a.rating);
-      setClassAge(a.classAge);
+      
       setGenres(Array.isArray(a.genres) ? a.genres : []);
     } finally {
       setLoading(false);
