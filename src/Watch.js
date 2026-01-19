@@ -188,7 +188,21 @@ function Watch() {
       ))}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-        {grouped[selectedRangeKey]?.map(({ ep, inde
+        {grouped[selectedRangeKey]?.map(({ ep, index }) => (
+          <button
+            key={index}
+            onClick={() => {
+              setEpisodeHref(ep.episodeHref);
+              setSelectedEpisode(index);
+            }}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 
   /* ===================== JSX ===================== */
