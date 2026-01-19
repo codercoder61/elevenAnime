@@ -43,7 +43,8 @@ function Home() {
   }, []);
 
   /* ===================== SLIDESHOW ===================== */
-  let slideIndex = 1;
+  const slideIndexRef = useRef(1);
+
 
   
 
